@@ -20,4 +20,8 @@ public class Product {
     private Integer stock;
     private Double price;
     private String image;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
+    private Category category;
 }
