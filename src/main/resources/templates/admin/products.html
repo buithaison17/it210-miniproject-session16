@@ -3,42 +3,17 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <title>Quan tri</title>
+    <title>Quan ly san pham</title>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="d-flex justify-content-between align-items-center my-4">
-        <h2 class="mb-0">Trang quan tri</h2>
+        <h2 class="mb-0">Quan ly san pham</h2>
         <div>
-            <button class="btn btn-primary" type="button">Them danh muc</button>
             <button class="btn btn-primary" type="button">Them san pham</button>
         </div>
     </div>
 
-    <h4 class="mt-4">Danh muc</h4>
-    <table class="table table-bordered table-hover">
-        <thead class="thead-light">
-        <tr>
-            <th style="width: 80px">ID</th>
-            <th>Ten danh muc</th>
-            <th style="width: 160px">So san pham</th>
-            <th style="width: 180px">Thao tac</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="category : ${categories}">
-            <td th:text="${category.id}"></td>
-            <td th:text="${category.name}"></td>
-            <td th:text="${category.products != null ? category.products.size() : 0}"></td>
-            <td>
-                <button class="btn btn-sm btn-warning" type="button">Sua</button>
-                <button class="btn btn-sm btn-danger" type="button">Xoa</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <h4 class="mt-5">San pham</h4>
     <table class="table table-bordered table-hover">
         <thead class="thead-light">
         <tr>
