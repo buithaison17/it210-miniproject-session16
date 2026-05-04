@@ -3,29 +3,95 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <title>Title</title>
-    <!-- Required meta tags -->
+    <title>Sản phẩm</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
 <div layout:fragment="content">
-    <h1>Xin chào</h1>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div class="mb-3 mb-md-0">
+            <h2 class="mb-2" style="font-size: 42px; font-weight: 700;">Sản phẩm nổi bật</h2>
+            <p class="text-muted mb-0" th:text="'Hiển thị ' + ${productPage.totalElements} + ' sản phẩm'"></p>
+        </div>
+    </div>
+
+    <div class="border rounded p-3 mb-4" style="background-color: #f8f9fa;">
+        <form th:action="@{/cilent}" method="get">
+            <div class="form-row align-items-end">
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <label for="keyword" class="font-weight-bold">Tìm sản phẩm</label>
+                    <input id="keyword" name="keyword" type="text" class="form-control"
+                           th:value="${keyword}" placeholder="Nhập tên sản phẩm...">
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <label for="categoryId" class="font-weight-bold">Danh mục</label>
+                    <select id="categoryId" name="categoryId" class="form-control">
+                        <option value="">Tất cả danh mục</option>
+                        <option th:each="category : ${categories}"
+                                th:value="${category.id}"
+                                th:text="${category.name}"
+                                th:selected="${categoryId != null && categoryId == category.id}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn text-white btn-block" style="background-color: #1e88ff;">Tìm</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row" th:if="${!products.isEmpty()}">
+        <div class="col-md-6 mb-4" th:each="product : ${products}">
+            <div class="border rounded bg-white h-100 p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge badge-light border px-3 py-2"
+                          th:text="${product.category != null ? product.category.name : 'Chưa phân loại'}"></span>
+                    <span class="text-muted small" th:text="'Tồn kho: ' + ${product.stock}"></span>
+                </div>
+
+                <h3 class="font-weight-bold mb-2" th:text="${product.name}"></h3>
+
+                <p class="text-muted mb-4" style="min-height: 72px;"
+                   th:text="${product.description != null ? product.description : 'Không có mô tả'}"></p>
+
+                <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small mb-1">Giá bán</div>
+                        <strong style="font-size: 28px; color: #1e88ff;"
+                                th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></strong>
+                    </div>
+                    <a href="/user/cart" class="btn btn-outline-primary">Xem giỏ hàng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="border rounded p-5 text-center bg-white" th:if="${products.isEmpty()}">
+        <h3 class="font-weight-bold mb-2">Không tìm thấy sản phẩm</h3>
+        <p class="text-muted mb-0">Thử tìm với từ khóa hoặc danh mục khác.</p>
+    </div>
+
+    <nav th:if="${productPage.totalPages > 1}" aria-label="Product pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${productPage.first} ? ' disabled'">
+                <a class="page-link"
+                   th:href="@{/cilent(page=${currentPage - 1}, keyword=${keyword}, categoryId=${categoryId})}">Trước</a>
+            </li>
+            <li class="page-item"
+                th:each="pageNumber : ${#numbers.sequence(0, productPage.totalPages - 1)}"
+                th:classappend="${pageNumber == currentPage} ? ' active'">
+                <a class="page-link"
+                   th:href="@{/cilent(page=${pageNumber}, keyword=${keyword}, categoryId=${categoryId})}"
+                   th:text="${pageNumber + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${productPage.last} ? ' disabled'">
+                <a class="page-link"
+                   th:href="@{/cilent(page=${currentPage + 1}, keyword=${keyword}, categoryId=${categoryId})}">Sau</a>
+            </li>
+        </ul>
+    </nav>
 </div>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
 </body>
 </html>
