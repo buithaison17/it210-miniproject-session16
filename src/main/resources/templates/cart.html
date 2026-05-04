@@ -3,47 +3,24 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <title>Giỏ hàng của bạn</title>
+    <title>Title</title>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-        .product-img { width: 60px; height: 60px; object-fit: cover; }
-        .alert-fixed { margin-bottom: 20px; border-left: 5px solid #dc3545; }
-    </style>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
 <div layout:fragment="content" class="container mt-5">
-
-    <!-- 1. THÔNG BÁO LỖI (Quan trọng cho Transaction Rollback) -->
-    <!-- Hiển thị khi OrderService ném ra Exception "Sản phẩm X không đủ số lượng" -->
-    <div th:if="${errorMsg}" class="alert alert-danger alert-fixed shadow-sm">
-        <div class="d-flex align-items-center">
-            <span class="mr-2"></span>
-            <strong th:text="${errorMsg}">Thông báo lỗi ở đây</strong>
-        </div>
-    </div>
-
     <h3 class="mb-4">🛒 Giỏ hàng của bạn</h3>
-
-    <!-- Kiểm tra nếu giỏ hàng trống -->
-    <div th:if="${session.cart == null or session.cart.isEmpty()}" class="text-center py-5 shadow-sm bg-light rounded">
-        <p class="text-muted">Giỏ hàng của bạn đang trống!</p>
-        <a href="/products" class="btn btn-primary">Mua sắm ngay</a>
-    </div>
-
-    <!-- Hiển thị bảng sản phẩm nếu có hàng -->
-    <div class="row" th:if="${session.cart != null and !session.cart.isEmpty()}">
+    <div class="row">
         <!-- Danh sách sản phẩm -->
         <div class="col-lg-8">
-<<<<<<< HEAD
-            <table class="table align-middle shadow-sm bg-white rounded">
-                <thead class="thead-light">
-=======
             <h3 th:if="${cart.size()==0}" th:text="'Giỏ hàng trống'"></h3>
             <table th:if="${cart.size() > 0}" class="table align-middle">
                 <thead class="table-light">
->>>>>>> 63ba921e08023c2f77da51e760be0b2070a1e758
                 <tr>
                     <th>Sản phẩm</th>
                     <th>Giá</th>
@@ -53,35 +30,6 @@
                 </tr>
                 </thead>
                 <tbody>
-<<<<<<< HEAD
-                <!-- Duyệt qua Map<Product, Integer> từ Session -->
-                <tr th:each="entry : ${session.cart}">
-                    <td class="d-flex align-items-center border-0">
-                        <!-- Giả sử Product có thuộc tính image, nếu không hãy để ảnh mặc định -->
-                        <img th:src="${entry.key.image != null ? entry.key.image : 'https://via.placeholder.com/60'}"
-                             class="mr-3 rounded product-img shadow-sm">
-                        <div>
-                            <h6 class="mb-0" th:text="${entry.key.name}">Tên sản phẩm</h6>
-                            <small class="text-muted" th:text="${entry.key.category != null ? entry.key.category.name : 'Danh mục'}">Danh mục</small>
-                        </div>
-                    </td>
-                    <td class="align-middle">
-                        <span th:text="${#numbers.formatDecimal(entry.key.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
-                    </td>
-                    <td class="align-middle" style="width:100px;">
-                        <!-- Form cập nhật số lượng (nếu bạn làm thêm tính năng Update) -->
-                        <input type="number" class="form-control text-center"
-                               th:value="${entry.value}" min="1">
-                    </td>
-                    <td class="align-middle font-weight-bold">
-                        <span th:text="${#numbers.formatDecimal(entry.key.price * entry.value, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
-                    </td>
-                    <td class="align-middle text-right">
-                        <!-- Nút xóa sản phẩm khỏi giỏ hàng -->
-                        <a th:href="@{/cart/remove/{id}(id=${entry.key.id})}" class="btn btn-outline-danger btn-sm border-0">
-                            <i class="fa fa-trash"></i> X
-                        </a>
-=======
                 <tr th:each="item : ${cart}">
                     <td class="d-flex align-items-center">
                         <img th:src="${item.product.image}" class="me-3 rounded">
@@ -99,73 +47,46 @@
                     <td th:text="${item.product.price}"></td>
                     <td>
                         <a th:href="@{/user/delete-cart(id=${item.product.id})}" class="btn btn-sm btn-danger">X</a>
->>>>>>> 63ba921e08023c2f77da51e760be0b2070a1e758
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-<<<<<<< HEAD
-
-        <!-- Cột Tổng tiền & Thanh toán -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm border-0">
-=======
         <!-- Tổng tiền -->
         <div th:if="${cart.size() > 0}" class="col-lg-4">
             <div class="card shadow-sm">
->>>>>>> 63ba921e08023c2f77da51e760be0b2070a1e758
                 <div class="card-body">
-                    <h5 class="card-title mb-4">Tóm tắt đơn hàng</h5>
-
+                    <h5 class="mb-3">Tóm tắt đơn hàng</h5>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Tạm tính</span>
-<<<<<<< HEAD
-                        <span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">0đ</span>
-                    </div>
-
-                    <div class="d-flex justify-content-between mb-3 text-success">
-                        <span>Phí giao hàng</span>
-                        <span>Miễn phí</span>
-=======
                         <span th:text="${total}"></span>
                     </div>
                     <div class="d-flex justify-content-between mb-3">
                         <span>Phí ship</span>
                         <span th:text="${shippingFee}"></span>
->>>>>>> 63ba921e08023c2f77da51e760be0b2070a1e758
                     </div>
-
                     <hr>
-<<<<<<< HEAD
-
-                    <div class="d-flex justify-content-between mb-4">
-                        <span class="h5">Tổng cộng</span>
-                        <span class="h5 text-danger font-weight-bold"
-                              th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">0đ</span>
-=======
                     <div class="d-flex justify-content-between fw-bold mb-3">
                         <span>Tổng</span>
                         <span class="text-danger" th:text="${total+shippingFee}"></span>
->>>>>>> 63ba921e08023c2f77da51e760be0b2070a1e758
                     </div>
-
-                    <!-- Nút dẫn đến trang Checkout -->
-                    <a th:href="@{/checkout}" class="btn btn-primary btn-block btn-lg shadow-sm mb-3">
-                        Tiến hành thanh toán
-                    </a>
-
-                    <a href="/products" class="btn btn-outline-secondary btn-block">
-                        ← Tiếp tục mua sắm
-                    </a>
+                    <button class="btn btn-primary w-100 mb-2">Thanh toán</button>
+                    <a href="/products" class="btn btn-outline-secondary w-100">← Tiếp tục mua</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
