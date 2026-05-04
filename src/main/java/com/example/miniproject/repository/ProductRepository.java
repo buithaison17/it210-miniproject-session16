@@ -6,8 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 63ba921e08023c2f77da51e760be0b2070a1e758

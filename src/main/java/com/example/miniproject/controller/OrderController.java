@@ -71,6 +71,7 @@ public class OrderController {
         model.addAttribute("totalPrice", totalPrice);
         return "checkout"; // Trả về checkout.html
     }
+
     @PostMapping("/checkout")
     public String processCheckout(Order order, HttpSession session, RedirectAttributes ra) {
         Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
