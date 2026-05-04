@@ -20,11 +20,13 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/login")
-    public String showLogin(HttpSession session) {
+    public String showLogin(HttpSession session, Model model) {
         if (session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             return redirectBasedOnRole(user);
         }
+
+        model.addAttribute("userDTO", new UserDTO());
         return "login";
     }
 
@@ -36,7 +38,7 @@ public class AuthController {
                 session.setAttribute("user", userOpt.get());
                 return "redirect:" + redirectBasedOnRole(userOpt.get());
             } else {
-                model.addAttribute("userDTO", userDTO); // Giữ email
+                model.addAttribute("userDTO", userDTO);
                 model.addAttribute("error", "Email hoặc mật khẩu không hợp lệ");
                 return "login";
             }
@@ -48,11 +50,13 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String showRegister(HttpSession session) {
+    public String showRegister(HttpSession session, Model model) {
         if (session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             return redirectBasedOnRole(user);
         }
+
+        model.addAttribute("userDTO", new UserDTO());
         return "register";
     }
 
@@ -63,8 +67,13 @@ public class AuthController {
             redirectAttributes.addFlashAttribute("success", "Đăng ký thành công. Vui lòng đăng nhập.");
             return "redirect:/login";
         } catch (Exception e) {
-            model.addAttribute("userDTO", userDTO); // Giữ dữ liệu form
-            model.addAttribute("error", "Đăng ký thất bại: " + e.getMessage());
+            String errorMessage = e.getMessage();
+            model.addAttribute("error", "Đăng ký thất bại: " + errorMessage);
+            if ("Mật khẩu xác nhận không khớp".equals(errorMessage)) {
+                model.addAttribute("userDTO", userDTO); // Giữ dữ liệu nếu mật khẩu không khớp
+            } else {
+                model.addAttribute("userDTO", new UserDTO()); // Xóa dữ liệu nếu email trùng
+            }
             return "register";
         }
     }
@@ -79,7 +88,7 @@ public class AuthController {
         if (user.getRole() == Role.ADMIN) {
             return "/admin";
         } else {
-            return "/"; // Assuming home page for customers
+            return "/";
         }
     }
 }
