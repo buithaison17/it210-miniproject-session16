@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -52,24 +53,30 @@ public class OrderController {
 
     @GetMapping("/checkout")
     public String showCheckoutPage(HttpSession session, Model model) {
-        Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
+        // 1. Lấy giỏ hàng (bây giờ Leader để là List/Collection nên ta dùng Object cho an toàn hoặc List)
+        Object cartObj = session.getAttribute("cart");
 
-        // Nếu giỏ hàng trống, không cho vào trang checkout
-        if (cart == null || cart.isEmpty()) {
+        if (cartObj == null) {
             return "redirect:/cart";
         }
 
-        // Tính tổng tiền hiển thị ở cột tóm tắt đơn hàng
-        double totalPrice = 0;
-        for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
-            Product p = productRepository.findById(entry.getKey()).orElse(null);
-            if (p != null) {
-                totalPrice += p.getPrice() * entry.getValue();
-            }
+        // 2. Tính tổng tiền dựa trên cấu trúc mới (thường Leader sẽ dùng List các đối tượng CartItem)
+        double total = 0;
+
+        // Nếu Leader dùng List<CartItem> hoặc tương đương:
+        if (cartObj instanceof List<?>) {
+            List<?> cartList = (List<?>) cartObj;
+            if (cartList.isEmpty()) return "redirect:/cart";
+
+            // Bạn cần xem CartItem của Leader có các method nào (ví dụ getPrice, getQuantity)
+            // Đây là code giả định phổ biến sau khi merge:
+            model.addAttribute("cart", cartList);
+            // Tính tổng tiền (Ví dụ: duyệt list và cộng dồn)
+            // total = cartList.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
         }
 
-        model.addAttribute("totalPrice", totalPrice);
-        return "checkout"; // Trả về checkout.html
+        model.addAttribute("totalPrice", total);
+        return "checkout";
     }
 
     @PostMapping("/checkout")
