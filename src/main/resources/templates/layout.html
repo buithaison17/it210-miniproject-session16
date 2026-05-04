@@ -35,7 +35,14 @@
                     <a href="/cart" class="btn btn-outline-secondary position-relative me-2">
                         🛒
                     </a>
-                    <a href="/login" class="btn btn-outline-primary me-2">Đăng xuất</a>
+                    <div th:if="${session.user == null}">
+                        <a href="/login" class="btn btn-outline-primary me-2">Đăng nhập</a>
+                        <a href="/register" class="btn btn-outline-secondary">Đăng ký</a>
+                    </div>
+                    <div th:if="${session.user != null}">
+                        <span class="me-2">Xin chào, <span th:text="${session.user.fullName}"></span></span>
+                        <a href="/logout" class="btn btn-outline-danger">Đăng xuất</a>
+                    </div>
                 </div>
 
             </div>
