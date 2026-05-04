@@ -18,7 +18,8 @@
     <div class="row">
         <!-- Danh sách sản phẩm -->
         <div class="col-lg-8">
-            <table class="table align-middle">
+            <h3 th:if="${cart.size()==0}" th:text="'Giỏ hàng trống'"></h3>
+            <table th:if="${cart.size() > 0}" class="table align-middle">
                 <thead class="table-light">
                 <tr>
                     <th>Sản phẩm</th>
@@ -29,61 +30,45 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Item -->
                 <tr th:each="item : ${cart}">
                     <td class="d-flex align-items-center">
-                        <img th:src="${item.key.image}" class="me-3 rounded">
+                        <img th:src="${item.product.image}" class="me-3 rounded">
                         <div>
-                            <h6 class="mb-0" th:text="${item.key.name}"></h6>
-                            <small class="text-muted" th:text="${item.key.category.name}"></small>
+                            <h6 class="mb-0" th:text="${item.product.name}"></h6>
+                            <!--                            <small class="text-muted" th:text="${item.key.category.name}"></small>-->
                         </div>
                     </td>
-                    <td>200.000đ</td>
-                    <td style="width:120px;">
-                        <input type="number" class="form-control" value="1" min="1">
-                    </td>
-                    <td>200.000đ</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger">X</button>
-                    </td>
-                </tr>
-                <!-- Item -->
-                <tr>
+                    <td th:text="${item.quantity}"></td>
                     <td class="d-flex align-items-center">
-                        <img src="https://via.placeholder.com/60" class="me-3 rounded">
-                        <div>
-                            <h6 class="mb-0">Giày sneaker</h6>
-                        </div>
+                        <a th:href="@{/user/decrease-item-cart(id=${item.product.id})}">-</a>
+                        <span th:text="${item.quantity}"></span>
+                        <a th:href="@{/user/increase-item-cart(id=${item.product.id})}">+</a>
                     </td>
-                    <td>500.000đ</td>
+                    <td th:text="${item.product.price}"></td>
                     <td>
-                        <input type="number" class="form-control" value="2" min="1">
-                    </td>
-                    <td>1.000.000đ</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger">X</button>
+                        <a th:href="@{/user/delete-cart(id=${item.product.id})}" class="btn btn-sm btn-danger">X</a>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <!-- Tổng tiền -->
-        <div class="col-lg-4">
+        <div th:if="${cart.size() > 0}" class="col-lg-4">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="mb-3">Tóm tắt đơn hàng</h5>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Tạm tính</span>
-                        <span>1.200.000đ</span>
+                        <span th:text="${total}"></span>
                     </div>
                     <div class="d-flex justify-content-between mb-3">
                         <span>Phí ship</span>
-                        <span>30.000đ</span>
+                        <span th:text="${shippingFee}"></span>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between fw-bold mb-3">
                         <span>Tổng</span>
-                        <span class="text-danger">1.230.000đ</span>
+                        <span class="text-danger" th:text="${total+shippingFee}"></span>
                     </div>
                     <button class="btn btn-primary w-100 mb-2">Thanh toán</button>
                     <a href="/products" class="btn btn-outline-secondary w-100">← Tiếp tục mua</a>
